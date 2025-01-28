@@ -24,7 +24,7 @@ def validate_new_ride(data):
                  float(dropoff_latitude)
                  float(dropoff_longitude)
             except:
-                 return False, "Invalid latitude/longitutd data"
+                 return False, "Invalid latitude/longitude data"
 
             return True, "Valid"
                  
