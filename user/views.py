@@ -10,16 +10,16 @@ from rest_framework.permissions import AllowAny,IsAuthenticated
 
 from .validators import validate_custom_user
 
-class UserViewSet(viewsets.ViewSet):
-    
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = CustomUserSerializer
+    queryset = CustomUser.objects.all()
+
     """
     A ViewSet for listing or creating users.
     """
     def list(self, request):
-        
-        queryset = CustomUser.objects.all()
-        serializer = CustomUserSerializer(queryset,many=True)
-        return Response(serializer.data)
+        serializer = CustomUserSerializer(self.get_queryset(),many=True)
+        return self.get_paginated_response(self.paginate_queryset(serializer.data))
     
     def create(self, request):
             valid,msg = validate_custom_user(request.data)
