@@ -1,10 +1,10 @@
 from django.shortcuts import render
+from django.db.models import Prefetch
 from .models import Ride, Ride_Event
 
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework import filters
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
@@ -13,9 +13,19 @@ from .validators import validate_new_ride
 from .serializers import RideSerializer,RideEventSerializer
 from .funcs import results_by_distance
 
+from datetime import timedelta
+from django.utils.timezone import now
+
+
 class RideViewSet(viewsets.ModelViewSet):
     serializer_class = RideSerializer
-    queryset = Ride.objects.all().order_by('id_ride')
+    queryset = Ride.objects.select_related(
+                            'id_driver','id_rider'
+                            ).prefetch_related(
+                                'ride_event_set'
+                            ).prefetch_related(
+                                Prefetch('ride_event_set', queryset=Ride_Event.objects.filter(created_at__gte=now()-timedelta(hours=24)),to_attr='todays_ride_events'),
+                            ).all().order_by('id_ride')
     filter_backends=[DjangoFilterBackend,filters.OrderingFilter]
     filterset_fields = ['status','id_driver__email']
     ordering_fields = ['pickup_time']
