@@ -32,7 +32,7 @@ class RideViewSet(viewsets.ModelViewSet):
         order_pickup = self.request.query_params.get('order_pickup')
         if order_pickup == 'recent':
             order_by = '-pickup_time'
-        elif order_by == 'last':
+        elif order_pickup == 'last':
             order_by = 'pickup_time'
         
 
