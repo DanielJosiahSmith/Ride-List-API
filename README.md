@@ -5,12 +5,13 @@
 1. Create a directory for the project - $mkdir RideAPI
 2. Cd into the directory - $cd RideAPI
 3. Clone repository - $git clone https://github.com/DanielJosiahSmith/Ride-List-API.git
-4. Create a virtual environment - $python -m venv venv
-5. Activate virtual environment - $venv/scripts/activate
-6. Install requirements.txt - $pip install -r requirement.txt
-7. Run migrations - $python manage.py migrate
-8. Start local server - $python manage.py runserver
-9. Create a user(admin) using postman, cURL - ex. 
+4. Cd into project directory - $cd Ride-List-API
+5. Create a virtual environment - $python -m venv venv
+6. Activate virtual environment - $venv/scripts/activate
+7. Install requirements.txt - $pip install -r requirement.txt
+8. Run migrations - $python manage.py migrate
+9. Start local server - $python manage.py runserver
+10. Create a user(admin) using postman, cURL - ex. 
 POST http://127.0.0.1:8000/users/
 payload  {
     "role": "admin",
@@ -19,7 +20,7 @@ payload  {
     "email": "johndoe@example.com",
     "phone_number": "1234567890"
 }
-10. Save token to use for all other requests. - ex.
+11. Save token to use for all other requests. - ex.
 response {
     "role": "admin",
     "msg": "1 - user created",
