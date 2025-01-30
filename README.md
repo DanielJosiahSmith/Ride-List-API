@@ -208,12 +208,12 @@ GET /api/rides/distance_to_pickup/?latitude=40.7128&longitude=-74.0060&offset=0&
 
 #### List all ride events
 ```http
-GET /api/ride-events/
+GET /api/ride_events/
 ```
 
 #### Create a new ride event
 ```http
-POST /api/ride-events/
+POST /api/ride_events/
 ```
 **Request Body:**
 ```json
@@ -231,17 +231,17 @@ POST /api/ride-events/
 
 #### Retrieve a ride event
 ```http
-GET /api/ride-events/{id}/
+GET /api/ride_events/{id}/
 ```
 
 #### Update a ride event
 ```http
-PUT /api/ride-events/{id}/
+PUT /api/ride_events/{id}/
 ```
 
 #### Delete a ride event
 ```http
-DELETE /api/ride-events/{id}/
+DELETE /api/ride_events/{id}/
 ```
 
 ## Bonus SQL
