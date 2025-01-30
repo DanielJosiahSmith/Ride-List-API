@@ -98,7 +98,7 @@ DELETE /api/users/{id}/
 ```http
 GET /api/rides/
 ```
-Optional QUERY PARAMS(status=dropoff,id_driver__email=bob@gmail.com,order_pickup=true)
+Optional QUERY PARAMS(status=dropoff,id_driver__email=bob@gmail.com,order_pickup=[choose recent or last])
 
 **Response:**
 ```json
