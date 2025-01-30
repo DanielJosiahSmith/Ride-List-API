@@ -21,20 +21,31 @@ class RideViewSet(viewsets.ModelViewSet):
     """A ViewSet for creating, listing, retrieving, updating, and deleting rides."""
 
     serializer_class = RideSerializer
-    #select_related to get users
-    #prefetch for ride_events per ride
-    #another prefetch for ride_events within the past 24 hours
-    queryset = Ride.objects.select_related(
+   
+    #Add filtering for status, and driver_email
+    filter_backends=[DjangoFilterBackend,filters.OrderingFilter]
+    filterset_fields = ['status','id_driver__email']
+    
+    def get_queryset(self):
+        #sorting based on pickup_time
+        order_by = 'id_ride'
+        order_pickup = self.request.query_params.get('order_pickup')
+        if order_pickup == 'true':
+            order_by = 'pickup_time'
+        
+
+         #select_related to get users
+        #prefetch for ride_events per ride
+        #another prefetch for ride_events within the past 24 hours
+        queryset = Ride.objects.select_related(
                             'id_driver','id_rider'
                             ).prefetch_related(
                                 'ride_event_set'
                             ).prefetch_related(
                                 Prefetch('ride_event_set', queryset=Ride_Event.objects.filter(created_at__gte=now()-timedelta(hours=24)),to_attr='todays_ride_events'),
-                            ).all().order_by('id_ride')
-    #Add filtering for status, and driver_email, add sorting based on pickup_time
-    filter_backends=[DjangoFilterBackend,filters.OrderingFilter]
-    filterset_fields = ['status','id_driver__email']
-    ordering_fields = ['pickup_time']
+                            ).all().order_by(order_by)
+
+        return queryset
 
     def create(self, request):
         try:
