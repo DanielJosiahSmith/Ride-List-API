@@ -32,6 +32,11 @@ response {
 Include in HTTP headers:<br>
 "Authorization" : "Token [your-token-here]"
 
+# Pagination
+Default page size is 20<br>
+Usage - page=1,page=2,etc.<br>
+Note: /api/rides/distance_to_pickup/ does not use page=1, instead uses offset=10,offset=20,etc.
+
 
 
 # Ride API Usage
@@ -93,6 +98,8 @@ DELETE /api/users/{id}/
 ```http
 GET /api/rides/
 ```
+Optional QUERY PARAMS(status=dropoff,id_driver__email=bob@gmail.com,order_pickup=true)
+
 **Response:**
 ```json
 [
@@ -156,6 +163,13 @@ GET /api/rides/
     }
 ]
 ```
+
+#### List Rides for a given location to pickup location(within 250km)
+```http
+GET /api/rides/distance_to_pickup/
+```
+Required Query Parameter(latitude=37.75565118171777,longitude=-122.4475571619079)<br>
+Optional Query Parameters(offset=0,limit=10)
 
 #### Create a new ride
 ```http
