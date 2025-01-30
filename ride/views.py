@@ -18,7 +18,12 @@ from django.utils.timezone import now
 
 
 class RideViewSet(viewsets.ModelViewSet):
+    """A ViewSet for creating, listing, retrieving, updating, and deleting rides."""
+
     serializer_class = RideSerializer
+    #select_related to get users
+    #prefetch for ride_events per ride
+    #another prefetch for ride_events within the past 24 hours
     queryset = Ride.objects.select_related(
                             'id_driver','id_rider'
                             ).prefetch_related(
@@ -26,41 +31,51 @@ class RideViewSet(viewsets.ModelViewSet):
                             ).prefetch_related(
                                 Prefetch('ride_event_set', queryset=Ride_Event.objects.filter(created_at__gte=now()-timedelta(hours=24)),to_attr='todays_ride_events'),
                             ).all().order_by('id_ride')
+    #Add filtering for status, and driver_email, add sorting based on pickup_time
     filter_backends=[DjangoFilterBackend,filters.OrderingFilter]
     filterset_fields = ['status','id_driver__email']
     ordering_fields = ['pickup_time']
 
     def create(self, request):
-        valid,msg = validate_new_ride(request.data)
+        try:
+            valid,msg = validate_new_ride(request.data)
 
-        if valid:
-            ride = Ride.objects.create(
-                status=request.data['status'],
-                id_rider_id=request.data['id_rider'],
-                id_driver_id=request.data['id_driver'],
-                pickup_latitude=request.data['pickup_latitude'],
-                pickup_longitude=request.data['pickup_longitude'],
-                dropoff_latitude=request.data['dropoff_latitude'],
-                dropoff_longitude=request.data['dropoff_longitude'],
-            )
+            if valid:
+                ride = Ride.objects.create(
+                    status=request.data['status'],
+                    id_rider_id=request.data['id_rider'],
+                    id_driver_id=request.data['id_driver'],
+                    pickup_latitude=request.data['pickup_latitude'],
+                    pickup_longitude=request.data['pickup_longitude'],
+                    dropoff_latitude=request.data['dropoff_latitude'],
+                    dropoff_longitude=request.data['dropoff_longitude'],
+                )
 
-            return Response({'msg':f'{ride.id_ride} - ride created'}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({'message':msg}, status.HTTP_400_BAD_REQUEST)
+                return Response({'msg':f'{ride.id_ride} - ride created'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'message':msg}, status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response({'message':'400 Bad Request'}, status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=['get'])
     def distance_to_pickup(self, request):
-        longitude = self.request.query_params.get('longitude')
-        latitude= self.request.query_params.get('latitude')
-        offset = int(self.request.query_params.get('offset', 0))  # Default offset is 0
-        limit = int(self.request.query_params.get('limit', 10))  # Default limit is 10
-        
-        qs = results_by_distance(latitude,longitude,offset,limit)
-        serializer = RideSerializer(qs,many=True)
+        """define a custom url method to get rides based on distance from a given location"""
+        try:
+            longitude = self.request.query_params.get('longitude')
+            latitude = self.request.query_params.get('latitude')
+            offset = int(self.request.query_params.get('offset', 0))  # Default offset is 0
+            limit = int(self.request.query_params.get('limit', 10))  # Default limit is 10
+            
+            qs = results_by_distance(latitude,longitude,offset,limit)
+            serializer = RideSerializer(qs,many=True)
 
-        return Response(serializer.data)
+            return Response(serializer.data)
+        except:
+            return Response({'message':'400 Bad Request'}, status.HTTP_400_BAD_REQUEST)
 
 class RideEventViewSet(viewsets.ModelViewSet):
+    """A ViewSet for creating, listing, retrieving, updating, and deleting ride events."""
+
     queryset = Ride_Event.objects.all()
     serializer_class = RideEventSerializer
     
@@ -73,6 +88,6 @@ class RideEventViewSet(viewsets.ModelViewSet):
             )
             return Response({'msg':f'{ride_event.id_ride_event} - ride event created'}, status=status.HTTP_201_CREATED)
         except:
-            return Response({'message':'400 BAD REQUEST'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'message':'400 Bad Request'}, status.HTTP_400_BAD_REQUEST)
          
     

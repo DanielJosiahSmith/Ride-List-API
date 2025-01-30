@@ -2,8 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
 class CustomUser(AbstractBaseUser):
-    user_id = models.AutoField(primary_key=True)
+    """Custom User Model"""
 
+    user_id = models.AutoField(primary_key=True)
+    #user_id replaces username as primary key
     USERNAME_FIELD = "user_id"
 
     role = models.CharField(max_length=255)

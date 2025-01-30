@@ -22,8 +22,3 @@ class RideSerializer(serializers.ModelSerializer):
         fields = ['id_ride','status','pickup_latitude','id_driver','id_rider',
                   'pickup_longitude','dropoff_latitude','dropoff_longitude',
                   'pickup_time','ride_event_set','todays_ride_events']
-
-
-    def get_todays_ride_events(self, obj):
-        """Filter ride events that were created in the last 24 hours."""
-        return RideEventSerializer(obj.ride_event_set.filter(created_at__gte=now()-timedelta(hours=24)), many=True).data

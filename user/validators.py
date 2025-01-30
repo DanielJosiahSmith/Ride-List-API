@@ -3,6 +3,7 @@ from django.core.validators import validate_email
 
 
 def validate_custom_user(data):
+        """verify data exists and valid email"""
         try:
             role = data['role']
             f_name = data['first_name']

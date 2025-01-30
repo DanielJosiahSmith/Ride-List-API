@@ -1,6 +1,10 @@
 from user.models import CustomUser
 
 def validate_new_ride(data):
+        #verify data 
+        #   - check if users exist
+        #   - ensure lat/long are float values
+
         try:
             status = data['status']
             id_rider = data['id_rider']

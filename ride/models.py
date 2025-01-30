@@ -2,6 +2,7 @@ from django.db import models
 from user.models import CustomUser
 
 class Ride(models.Model):
+    """Ride Model"""
     id_ride = models.AutoField(primary_key=True)
     status = models.CharField(max_length=255)
     id_rider = models.ForeignKey(CustomUser,on_delete=models.SET_NULL,blank=True,null=True,related_name='rides')
@@ -17,6 +18,7 @@ class Ride(models.Model):
 
 
 class Ride_Event(models.Model):
+    """Ride Events Model"""
     id_ride_event = models.AutoField(primary_key=True)
     id_ride = models.ForeignKey(Ride,on_delete=models.CASCADE)
     description = models.CharField(max_length=1000)

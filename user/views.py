@@ -11,17 +11,14 @@ from rest_framework.permissions import AllowAny,IsAuthenticated
 from .validators import validate_custom_user
 
 class UserViewSet(viewsets.ModelViewSet):
+    """A ViewSet for creating, listing, retrieving, updating, and deleting users."""
+     
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
-
-    """
-    A ViewSet for listing or creating users.
-    """
-    def list(self, request):
-        serializer = CustomUserSerializer(self.get_queryset(),many=True)
-        return self.get_paginated_response(self.paginate_queryset(serializer.data))
     
     def create(self, request):
+        """override default create method with validation and token creation"""
+        try:
             valid,msg = validate_custom_user(request.data)
 
             if valid:
@@ -39,12 +36,18 @@ class UserViewSet(viewsets.ModelViewSet):
                     
                 return Response({'role':f'{user.role}','msg':f'{user.user_id} - user created','token':token}, status=status.HTTP_201_CREATED)
             else:
+                #if data not valid from validator
                 return Response({'message':msg}, status.HTTP_400_BAD_REQUEST)
+        except:
+            #if user creation fails
+            #log exception
+            return Response({'message':'400 Bad Request'}, status.HTTP_400_BAD_REQUEST)
 
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
+        
         if self.action == 'create':
             permission_classes = [AllowAny]
         else:

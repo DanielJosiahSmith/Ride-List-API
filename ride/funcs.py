@@ -3,7 +3,7 @@ from django.core.serializers import serialize
 from .models import Ride
 
 def results_by_distance(target_lat, target_lng, offset=0, limit=10):
-    radius_km = 1000  # Radius in kilometers
+    radius_km = 250  # Radius in kilometers
 
     # Query with Bounding Box and Haversine Formula
     query = f"""
