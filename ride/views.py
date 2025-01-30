@@ -30,7 +30,9 @@ class RideViewSet(viewsets.ModelViewSet):
         #sorting based on pickup_time
         order_by = 'id_ride'
         order_pickup = self.request.query_params.get('order_pickup')
-        if order_pickup == 'true':
+        if order_pickup == 'recent':
+            order_by = '-pickup_time'
+        elif order_by == 'last':
             order_by = 'pickup_time'
         
 
