@@ -28,7 +28,7 @@ response {
 
 # Authentication
 
-Include in headers:<br>
+Include in HTTP headers:<br>
 "Authorization" : "Token [your-token-here]"
 
 
